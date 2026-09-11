@@ -333,6 +333,108 @@ BREED_CHARACTERISTICS = {
         'lifespan': '11-14 years',
         'origin': 'Spain'
     },
+    'pomeranian': {
+        'size': 'Toy',
+        'temperament': 'Lively, Bold, Inquisitive',
+        'lifespan': '12-16 years',
+        'origin': 'Germany'
+    },
+    'papillon': {
+        'size': 'Toy',
+        'temperament': 'Alert, Intelligent, Friendly',
+        'lifespan': '13-15 years',
+        'origin': 'France/Belgium'
+    },
+    'cavalier king charles': {
+        'size': 'Small',
+        'temperament': 'Affectionate, Gentle, Graceful',
+        'lifespan': '12-15 years',
+        'origin': 'England'
+    },
+    'basset hound': {
+        'size': 'Medium',
+        'temperament': 'Scent-driven, Stubborn, Affectionate',
+        'lifespan': '12-13 years',
+        'origin': 'France'
+    },
+    'bloodhound': {
+        'size': 'Large',
+        'temperament': 'Determined, Single-minded, Friendly',
+        'lifespan': '10-12 years',
+        'origin': 'Belgium'
+    },
+    'saint bernard': {
+        'size': 'Giant',
+        'temperament': 'Gentle, Massive, Watchful',
+        'lifespan': '8-10 years',
+        'origin': 'Switzerland'
+    },
+    'weimaraner': {
+        'size': 'Large',
+        'temperament': 'Alert, Obedient, Energetic',
+        'lifespan': '10-13 years',
+        'origin': 'Germany'
+    },
+    'vizsla': {
+        'size': 'Medium',
+        'temperament': 'Affectionate, Energetic, Gentle',
+        'lifespan': '12-15 years',
+        'origin': 'Hungary'
+    },
+    'boston terrier': {
+        'size': 'Small',
+        'temperament': 'Affectionate, Lively, Intelligent',
+        'lifespan': '11-15 years',
+        'origin': 'United States'
+    },
+    'jack russell terrier': {
+        'size': 'Small',
+        'temperament': 'Energetic, Fearless, Bold',
+        'lifespan': '13-16 years',
+        'origin': 'England'
+    },
+    'shih tzu': {
+        'size': 'Toy',
+        'temperament': 'Affectionate, Friendly, Playful',
+        'lifespan': '10-18 years',
+        'origin': 'China'
+    },
+    'bichon frise': {
+        'size': 'Toy',
+        'temperament': 'Cheerful, Playful, Affectionate',
+        'lifespan': '12-15 years',
+        'origin': 'Mediterranean'
+    },
+    'miniature schnauzer': {
+        'size': 'Small',
+        'temperament': 'Alert, Spirited, Intelligent',
+        'lifespan': '12-14 years',
+        'origin': 'Germany'
+    },
+    'springer spaniel': {
+        'size': 'Medium',
+        'temperament': 'Obedient, Willing, Active',
+        'lifespan': '12-14 years',
+        'origin': 'England'
+    },
+    'mastiff': {
+        'size': 'Giant',
+        'temperament': 'Calm, Dignified, Generous',
+        'lifespan': '6-10 years',
+        'origin': 'England'
+    },
+    'italian greyhound': {
+        'size': 'Toy',
+        'temperament': 'Affectionate, Playful, Lively',
+        'lifespan': '12-15 years',
+        'origin': 'Italy'
+    },
+    'collie': {
+        'size': 'Large',
+        'temperament': 'Intelligent, Loyal, Dignified',
+        'lifespan': '14-16 years',
+        'origin': 'Scotland'
+    },
 }
 
 # Traducción de nombres de razas al español
