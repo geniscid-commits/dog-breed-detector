@@ -131,9 +131,8 @@ BREED_ALIASES = {
     'papillon': 'papillon',
     'ibizan hound': 'hound/ibizan',
     'ibizan': 'hound/ibizan',
-    'cavalier': 'cavalier',
-    'cavalier king charles': 'cavalier',
-    'king charles': 'cavalier',
+    'cavalier king charles': 'cavalier/kingcharles',
+    'king charles': 'cavalier/kingcharles',
     'basset hound': 'hound/basset',
     'basset': 'hound/basset',
     'bloodhound': 'hound/blood',
@@ -149,13 +148,15 @@ BREED_ALIASES = {
     'schnauzer': 'schnauzer/miniature',
     'boston terrier': 'terrier/boston',
     'boston': 'terrier/boston',
-    'jack russell': 'terrier/russell',
     'jack russell terrier': 'terrier/russell',
     'shih tzu': 'shihtzu',
     'shih': 'shihtzu',
     'maltese dog': 'maltese',
     'bichon': 'frise/bichon',
-    'bichon frise': 'frise/bichon'
+    'bichon frise': 'frise/bichon',
+    'american staffordshire terrier': 'staffordshire/american',
+    'american staffordshire': 'staffordshire/american',
+    'amstaff': 'staffordshire/american'
 }
 
 BREED_CHARACTERISTICS = {
@@ -487,6 +488,18 @@ BREED_CHARACTERISTICS = {
         'size': 'Medium to Large',
         'temperament': 'Courageous, Confident, Strong-willed',
         'lifespan': '12-14 years',
+        'origin': 'United States'
+    },
+    'american staffordshire terrier': {
+        'size': 'Medium to Large',
+        'temperament': 'Confident, Courageous, Intelligent',
+        'lifespan': '12-16 years',
+        'origin': 'United States'
+    },
+    'american staffordshire': {
+        'size': 'Medium to Large',
+        'temperament': 'Confident, Courageous, Intelligent',
+        'lifespan': '12-16 years',
         'origin': 'United States'
     },
 }
