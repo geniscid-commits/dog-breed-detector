@@ -3,7 +3,7 @@ flask-cors==4.0.0
 ultralytics==8.3.0
 opencv-python==4.10.0.84
 pillow==11.0.0
-numpy==2.1.0
+numpy==1.26.4
 requests==2.32.0
 python-dotenv==1.0.0
 transformers==4.45.0
