@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Breed Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+        .banner {
+            background: linear-gradient(135deg, #4a6fa5 0%, #355c7d 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .banner h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+        .banner-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        .lang-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .lang-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 1rem;
+        }
+        .upload-zone {
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-zone:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+        .upload-zone.drag-over {
+            background: #f0f4f8;
+            border: 2px solid #4a6fa5;
+        }
+        .upload-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        .upload-zone p {
+            color: #666;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        .upload-zone .subtitle {
+            font-size: 0.85rem;
+            color: #999;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        #preview {
+            margin: 2rem 0;
+            display: none;
+        }
+        #preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+        .analyze-btn {
+            background: linear-gradient(135deg, #4a6fa5 0%, #355c7d 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74,111,165,0.3);
+        }
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #loadingSpinner {
+            display: none;
+            padding: 2rem;
+            text-align: center;
+        }
+        .spinner {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner-text {
+            color: #666;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+        #resultsContainer {
+            display: none;
+        }
+        .results-section {
+            margin-top: 2rem;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        #breedChart {
+            max-height: 250px;
+        }
+        #breedCardsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .breed-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .breed-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+        }
+
+        .breed-image-container {
+            width: 100%;
+            padding-top: 100%;
+            position: relative;
+            background: linear-gradient(135deg, #e8eef5 0%, #f0f4f8 100%);
+            overflow: hidden;
+        }
+
+        .breed-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 20%;
+            display: block;
+        }
+
+        .breed-info {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .breed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            gap: 0.5rem;
+        }
+        .breed-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.3;
+            flex: 1;
+        }
+        .confidence-badge {
+            background: #e8f1f9;
+            color: #4a6fa5;
+            padding: 0.3rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .breed-details {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+        }
+        .detail-item {
+            color: #666;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #4a6fa5;
+            display: block;
+            font-size: 0.7rem;
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .detail-value {
+            color: #2c3e50;
+            font-size: 0.75rem;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #5a8cbf 0%, #466d95 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(90,140,191,0.3);
+        }
+        @media (max-width: 640px) {
+            .banner h1 {
+                font-size: 1.75rem;
+            }
+            .main-container {
+                padding: 2rem 1rem;
+            }
+            .upload-zone {
+                padding: 2rem;
+            }
+            .upload-icon {
+                font-size: 3.5rem;
+            }
+            .breed-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <button class="lang-toggle" id="langToggle">EN / ES</button>
+        <h1 id="title">Dog Breed Detector</h1>
+        <p class="banner-subtitle" id="subtitle">Detect dog breeds using AI</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="uploadZone">
+            <label for="imageInput" style="cursor: pointer; display: block;">
+                <div class="upload-icon" style="font-size: 0; display: flex; align-items: center; justify-content: center;">
+                    <img src="dog-icon.jpg" alt="Dog" style="width: 120px; height: 120px; object-fit: contain;">
+                </div>
+                <p id="uploadText">Click or drag your image here</p>
+                <p class="subtitle" id="uploadSubtext">JPG, PNG, WebP supported</p>
+                <p style="font-size: 0.75rem; color: #aaa; margin-top: 0.5rem; font-style: italic;" id="forBetterResults">For better results</p>
+
+                <!-- Tips -->
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e0e6ed;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.8rem; color: #888;">
+                        <div style="text-align: center;">
+                            <span style="display: block; font-size: 1.2rem; margin-bottom: 0.3rem;">📸</span>
+                            <span id="tip1" style="display: block;">Full body view</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="display: block; font-size: 1.2rem; margin-bottom: 0.3rem;">💡</span>
+                            <span id="tip2" style="display: block;">Well-lit photo</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="display: block; font-size: 1.2rem; margin-bottom: 0.3rem;">🎨</span>
+                            <span id="tip3" style="display: block;">Neutral background</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <span style="display: block; font-size: 1.2rem; margin-bottom: 0.3rem;">⭐</span>
+                            <span id="tip4" style="display: block;">Distinctive features</span>
+                        </div>
+                    </div>
+                </div>
+            </label>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <!-- Preview -->
+        <div id="preview">
+            <img id="previewImage" src="" alt="Preview">
+        </div>
+
+        <!-- Analyze Button -->
+        <button class="analyze-btn" id="analyzeBtn" disabled>
+            <span id="analyzeBtnText">Analyze Image</span>
+        </button>
+
+        <!-- Loading Spinner -->
+        <div id="loadingSpinner">
+            <div class="spinner">⏳</div>
+            <div class="spinner-text" id="analyzingText">Analyzing...</div>
+        </div>
+
+        <!-- Results -->
+        <div id="resultsContainer" class="results-section">
+            <!-- Chart -->
+            <div class="chart-container">
+                <div class="chart-title" id="chartTitle">Breed Distribution</div>
+                <canvas id="breedChart"></canvas>
+            </div>
+
+            <!-- Breed Cards -->
+            <div id="breedCardsContainer"></div>
+
+            <!-- Download Button -->
+            <button class="download-btn" id="downloadBtnText">Download Results</button>
+        </div>
+    </div>
+
+    <!-- Breed Card Template -->
+    <template id="breedCardTemplate">
+        <div class="breed-card">
+            <div class="breed-image-container">
+                <img class="breed-image" src="" alt="breed">
+            </div>
+            <div class="breed-info">
+                <div class="breed-header">
+                    <div class="breed-name"></div>
+                    <div class="confidence-badge"></div>
+                </div>
+                <div class="breed-details">
+                    <div class="detail-item">
+                        <span class="detail-label" id="sizeLabel">Size</span>
+                        <span class="detail-value size-value">Unknown</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label" id="temperamentLabel">Temperament</span>
+                        <span class="detail-value temperament-value">Unknown</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label" id="lifespanLabel">Lifespan</span>
+                        <span class="detail-value lifespan-value">Unknown</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label" id="originLabel">Origin</span>
+                        <span class="detail-value origin-value">Unknown</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
