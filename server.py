@@ -108,7 +108,6 @@ BREED_ALIASES = {
     'greatdane': 'dane/great',
     'bernese mountain dog': 'mountain/bernese',
     'bernese mountain': 'mountain/bernese',
-    'bernese': 'mountain/bernese',
     'mountain bernese': 'mountain/bernese',
     'dalmatian': 'dalmatian',
     'rottweiler': 'rottweiler',
@@ -132,9 +131,9 @@ BREED_ALIASES = {
     'papillon': 'papillon',
     'ibizan hound': 'hound/ibizan',
     'ibizan': 'hound/ibizan',
-    'cavalier': 'cavalier/kingcharles',
-    'cavalier king charles': 'cavalier/kingcharles',
-    'king charles': 'cavalier/kingcharles',
+    'cavalier': 'cavalier',
+    'cavalier king charles': 'cavalier',
+    'king charles': 'cavalier',
     'basset hound': 'hound/basset',
     'basset': 'hound/basset',
     'bloodhound': 'hound/blood',
@@ -442,6 +441,54 @@ BREED_CHARACTERISTICS = {
         'lifespan': '14-16 years',
         'origin': 'Scotland'
     },
+    'terrier': {
+        'size': 'Small to Medium',
+        'temperament': 'Brave, Energetic, Tenacious',
+        'lifespan': '12-15 years',
+        'origin': 'Various'
+    },
+    'spaniel': {
+        'size': 'Medium',
+        'temperament': 'Friendly, Obedient, Willing',
+        'lifespan': '12-14 years',
+        'origin': 'Spain'
+    },
+    'hound': {
+        'size': 'Medium to Large',
+        'temperament': 'Independent, Scent-driven, Loyal',
+        'lifespan': '10-13 years',
+        'origin': 'Various'
+    },
+    'setter': {
+        'size': 'Large',
+        'temperament': 'Intelligent, Eager, Gentle',
+        'lifespan': '11-14 years',
+        'origin': 'Europe'
+    },
+    'retriever': {
+        'size': 'Large',
+        'temperament': 'Friendly, Intelligent, Active',
+        'lifespan': '10-12 years',
+        'origin': 'Canada/Scotland'
+    },
+    'pinscher': {
+        'size': 'Small to Medium',
+        'temperament': 'Alert, Spirited, Intelligent',
+        'lifespan': '12-15 years',
+        'origin': 'Germany'
+    },
+    'airedale terrier': {
+        'size': 'Large',
+        'temperament': 'Courageous, Confident, Intelligent',
+        'lifespan': '11-14 years',
+        'origin': 'England'
+    },
+    'pit bull': {
+        'size': 'Medium to Large',
+        'temperament': 'Courageous, Confident, Strong-willed',
+        'lifespan': '12-14 years',
+        'origin': 'United States'
+    },
 }
 
 # Traducción de nombres de razas al español
@@ -681,7 +728,7 @@ def classify_breed(image_pil):
         return [{'breed': 'Breed Not Detected', 'confidence': 0.0}]
 
 def get_breed_characteristics(breed_name):
-    """Get breed characteristics from dictionary"""
+    """Get breed characteristics from dictionary, fallback to The Dog API"""
     breed_key = breed_name.lower().strip()
 
     # Buscar en diccionario exacto primero
@@ -693,7 +740,29 @@ def get_breed_characteristics(breed_name):
         if breed_key in key or key in breed_key:
             return chars
 
-    # Default
+    # Si no encuentra, consultar The Dog API
+    logger.info(f"Buscando {breed_name} en The Dog API...")
+    try:
+        response = requests.get(
+            f"https://api.thedogapi.com/v1/breeds/search?q={breed_key}",
+            timeout=5
+        )
+        if response.status_code == 200:
+            data = response.json()
+            if data and len(data) > 0:
+                breed_data = data[0]
+                characteristics = {
+                    'size': f"{breed_data.get('weight', {}).get('metric', 'Unknown')} kg",
+                    'temperament': breed_data.get('temperament', 'Unknown'),
+                    'lifespan': breed_data.get('life_span', 'Unknown'),
+                    'origin': breed_data.get('origin', 'Unknown')
+                }
+                logger.info(f"✓ Encontrado en The Dog API: {breed_name}")
+                return characteristics
+    except Exception as e:
+        logger.warning(f"Error consultando The Dog API para {breed_name}: {e}")
+
+    # Default como último recurso
     return {
         'size': 'Unknown',
         'temperament': 'Unknown',
