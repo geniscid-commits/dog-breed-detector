@@ -14,9 +14,11 @@ import torchvision.transforms as transforms
 
 load_dotenv()
 
-# Establecer directorio de caché con permisos
-os.environ['TORCH_HOME'] = os.path.join(os.path.expanduser('~'), 'AppData', 'Local', 'Temp', 'torch_models')
-os.makedirs(os.environ['TORCH_HOME'], exist_ok=True)
+# Establecer directorio de caché con permisos (compatible con Windows y Linux)
+import tempfile
+torch_cache_dir = os.path.join(tempfile.gettempdir(), 'torch_models')
+os.environ['TORCH_HOME'] = torch_cache_dir
+os.makedirs(torch_cache_dir, exist_ok=True)
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
@@ -748,4 +750,6 @@ def serve_static(filename):
     return send_from_directory('.', filename)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(debug=debug_mode, host='0.0.0.0', port=port)
