@@ -123,6 +123,8 @@ BREED_ALIASES = {
     'maltese': 'maltese',
     'pomeranian': 'pomeranian',
     'papillon': 'papillon',
+    'ibizan hound': 'hound/ibizan',
+    'ibizan': 'hound/ibizan',
     'cavalier': 'cavalier/kingcharles',
     'cavalier king charles': 'cavalier/kingcharles',
     'king charles': 'cavalier/kingcharles',
@@ -325,6 +327,12 @@ BREED_CHARACTERISTICS = {
         'lifespan': '10-13 years',
         'origin': 'England'
     },
+    'ibizan hound': {
+        'size': 'Large',
+        'temperament': 'Athletic, Elegant, Energetic',
+        'lifespan': '11-14 years',
+        'origin': 'Spain'
+    },
 }
 
 # Traducción de nombres de razas al español
@@ -367,6 +375,7 @@ BREED_TRANSLATIONS = {
     'setter': 'Setter',
     'greyhound': 'Galgo',
     'italian greyhound': 'Galgo Italiano',
+    'ibizan hound': 'Podenco Ibicenco',
     'australian shepherd': 'Pastor Australiano',
     'australian': 'Australiano',
     'border collie': 'Border Collie',
