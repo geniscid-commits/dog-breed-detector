@@ -42,6 +42,13 @@ except:
     model = models.resnet50(pretrained=True)
 model.eval()
 
+# Pre-cargar modelo para evitar cold start
+logger.info("Pre-cargando modelo en memoria...")
+with torch.no_grad():
+    dummy_input = torch.randn(1, 3, 224, 224)
+    model(dummy_input)
+logger.info("✓ Modelo cargado y listo")
+
 preprocess = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
