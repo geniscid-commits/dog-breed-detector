@@ -35,11 +35,11 @@ except:
     logger.warning("No se pudo cargar imagenet_classes.txt")
     IMAGENET_CLASSES = ['dog'] * 1000
 
-logger.info("Cargando modelo ResNet50...")
+logger.info("Cargando modelo MobileNetV2...")
 try:
-    model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
+    model = models.mobilenet_v2(weights=models.MobileNet_V2_Weights.DEFAULT)
 except:
-    model = models.resnet50(pretrained=True)
+    model = models.mobilenet_v2(pretrained=True)
 model.eval()
 
 # Pre-cargar modelo para evitar cold start
@@ -47,7 +47,7 @@ logger.info("Pre-cargando modelo en memoria...")
 with torch.no_grad():
     dummy_input = torch.randn(1, 3, 224, 224)
     model(dummy_input)
-logger.info("✓ Modelo cargado y listo")
+logger.info("✓ MobileNetV2 cargado y listo")
 
 preprocess = transforms.Compose([
     transforms.Resize(256),
